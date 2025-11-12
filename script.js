@@ -10,9 +10,6 @@ const sendBtn = document.getElementById("sendBtn");
 // Cloudflare Worker URL (replace with your published worker URL)
 const WORKER_URL = "https://REPLACE_WITH_YOUR_WORKER_URL.workers.dev";
 
-// Initial message
-chatWindow.textContent = "👋 Hello! How can I help you today?";
-
 /* Assistant behavior guidelines (system message) */
 const assistantGuidelines = `
 You are a helpful assistant that ONLY answers questions about L'Oréal products, routines, and recommendations. Stay strictly on-topic. Scope includes:
@@ -26,23 +23,47 @@ If a question is outside this scope, reply exactly:
 "Sorry — I can only answer questions about L'Oréal products, routines, and recommendations."
 `.trim();
 
-/* Helper: append a message to the chat window */
+/* Helper: append a message to the chat window as a conversation bubble */
 function appendMessage(role, text) {
+  // row controls alignment (left for ai, right for user)
+  const row = document.createElement("div");
+  row.className = `message-row ${role}`;
+
+  // message container (keeps old class names for compatibility)
   const msgDiv = document.createElement("div");
   msgDiv.className = `msg ${role}`;
-  msgDiv.textContent = text;
-  chatWindow.appendChild(msgDiv);
+
+  // bubble contains the actual text
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
+
+  msgDiv.appendChild(bubble);
+  row.appendChild(msgDiv);
+  chatWindow.appendChild(row);
+
+  // scroll to latest
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
 /* Helper: show temporary "thinking" indicator and return a remover */
 function showThinking() {
-  const thinking = document.createElement("div");
-  thinking.className = "msg ai";
-  thinking.textContent = "…thinking";
-  chatWindow.appendChild(thinking);
+  const row = document.createElement("div");
+  row.className = "message-row ai";
+
+  const msgDiv = document.createElement("div");
+  msgDiv.className = "msg ai";
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = "…thinking";
+
+  msgDiv.appendChild(bubble);
+  row.appendChild(msgDiv);
+  chatWindow.appendChild(row);
   chatWindow.scrollTop = chatWindow.scrollHeight;
-  return () => thinking.remove();
+
+  return () => row.remove();
 }
 
 /* Helper: display the latest question above the assistant reply.
@@ -55,10 +76,14 @@ function showLatestQuestion(questionText) {
   const q = document.createElement("div");
   q.className = "latest-question";
   q.textContent = `Question: ${questionText}`;
-  // Insert at the end so it appears just before assistant reply when we append it
+
+  // append so it sits just before the assistant reply which we will add next
   chatWindow.appendChild(q);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
+
+/* Initial greeting */
+appendMessage("ai", "👋 Hello! How can I help you today?");
 
 /* Main: send messages to Cloudflare Worker which proxies OpenAI */
 async function getChatbotReply(userText) {
@@ -110,7 +135,10 @@ chatForm.addEventListener("submit", async (e) => {
   if (!text) return;
 
   // Show the user's chat bubble (keeps history)
-  appendMessage("user", `You: ${text}`);
+  appendMessage("user", text);
+
+  // Display the latest question immediately (resets previous)
+  showLatestQuestion(text);
 
   // Clear input and disable UI while waiting
   userInput.value = "";
@@ -126,9 +154,6 @@ chatForm.addEventListener("submit", async (e) => {
 
     // Remove thinking indicator
     removeThinking();
-
-    // Display the latest question just above the assistant reply (resets each time)
-    showLatestQuestion(text);
 
     // Display assistant reply
     appendMessage("ai", reply);

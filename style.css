@@ -132,6 +132,69 @@ body {
   outline-offset: 2px;
 }
 
+/* messages container / bubble layout */
+/* row aligns messages left (ai) or right (user) */
+.message-row {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+/* user messages align right */
+.message-row.user {
+  justify-content: flex-end;
+}
+
+/* ai messages align left */
+.message-row.ai {
+  justify-content: flex-start;
+}
+
+/* bubble styling for both roles */
+.msg .bubble {
+  max-width: 78%;
+  padding: 12px 14px;
+  font-size: 16px;
+  line-height: 1.4;
+  display: inline-block;
+  word-wrap: break-word;
+}
+
+/* user bubble: dark background, white text */
+.msg.user .bubble {
+  background: #000;
+  color: #fff;
+  border-radius: 18px 18px 6px 18px;
+  text-align: right;
+}
+
+/* assistant bubble: light background, dark text */
+.msg.ai .bubble {
+  background: #ffffff;
+  color: #333;
+  border: 1px solid #e6e6e6;
+  border-radius: 18px 18px 18px 6px;
+  text-align: left;
+}
+
+/* smaller spacing for message container */
+.msg {
+  margin: 0;
+}
+
+/* keep visually-consistent latest-question styles */
+.latest-question {
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  color: #111;
+  margin: 12px 0 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
+}
+
 /* visually hidden */
 .visually-hidden {
   position: absolute;
@@ -165,4 +228,18 @@ body {
 
 .site-footer a:hover {
   color: #666666;
+}
+
+/* Latest question (shows just above the assistant reply) */
+.latest-question {
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  color: #111;
+  margin: 12px 0 8px;
+  padding: 8px 12px;
+  background: #ffffff; /* keep consistent with page */
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
 }
