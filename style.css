@@ -7,10 +7,15 @@
 
 /* —— body + fonts —— */
 body {
-  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  /* changed: use a Roman serif font */
+  font-family: "Times New Roman", Times, serif;
   color: #333;
   display: flex;
   justify-content: center;
+
+  /* page background color */
+  background-color: #ffffff;
+  min-height: 100vh;
 }
 
 .page-wrapper {
@@ -20,14 +25,34 @@ body {
 
 /* header */
 .site-header {
-  text-align: center;
-  padding-top: 50px;
+  display: flex;
+  flex-direction: column; /* stack logo above the title */
+  align-items: center; /* center horizontally */
+  padding: 24px 16px;
 }
 
 .site-title {
   font-size: 22px;
   font-weight: 500;
-  margin-bottom: 10px;
+  margin: 12px 0 0 0;
+  text-align: center;
+}
+
+/* Make the brand link align items and remove default link styles */
+.brand-link {
+  display: flex;
+  flex-direction: column; /* ensure image sits above the title */
+  align-items: center;
+  gap: 12px; /* space between logo and title */
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Logo sizing — larger and centered */
+.site-logo {
+  width: 220px; /* increased size */
+  height: auto;
+  display: block;
 }
 
 /* chat window */
